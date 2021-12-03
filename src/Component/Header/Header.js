@@ -9,10 +9,10 @@ const Header = () => {
             <Navbar style={{
                 backgroundColor: '#d70f64', height: '70px'
             }}>
-                <NavbarBrand href='/' className= 'mr-auto ml-md-5 Brand'>
+                <NavbarBrand href='/' className= 'me-auto ms-md-5 Brand'>
                     <img src={Logo} alt='Logo' width='80px' />
                 </NavbarBrand>
-                <Nav className='mr-md-5'>
+                <Nav className='me-md-5'>
                     <NavItem>
                          <NavLink href='#' className='NavLink'>
                             Something
