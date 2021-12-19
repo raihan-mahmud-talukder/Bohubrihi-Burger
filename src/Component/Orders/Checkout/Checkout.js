@@ -4,6 +4,7 @@ import { Button } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from "axios";
+import Spinner from "../../Spinner/Spinner";
 
 const mapStateToProps = state => {
     return {
@@ -19,7 +20,8 @@ class Checkout extends Component {
             deliveryAddress: '',
             phone: '',
             paymentType: 'Cash On Delivery',
-        }
+        },
+        isLoading: false,
     }
 
     goBack = () => {
@@ -36,6 +38,7 @@ class Checkout extends Component {
     }
 
     submit = () => {
+        this.setState({ isLoading: true });
         const order = {
             ingredients: this.props.ingredients,
             customer: this.state.values,
@@ -43,12 +46,20 @@ class Checkout extends Component {
             orderTime: new Date(),
         }
         axios.post('https://burger-builder-480c2-default-rtdb.firebaseio.com/orders.json', order)
-        .then(response => console.log(response))
-        .catch(err => console.log(err))
+        .then(response => {
+            if (response.status === 200) {
+                this.setState({ isLoading: false })
+            } else {
+                this.setState({ isLoading: false })
+            }
+        })
+        .catch(err => {
+            this.setState({ isLoading: false })
+        })
     }
 
     render() {
-        return (
+        let form = (
             <div>
                 <h4 style={{
                     border: '1px solid grey',
@@ -68,9 +79,14 @@ class Checkout extends Component {
                         <option value='Cash On Delivery'>Cash On Delivery</option>
                         <option value='Bkash'>Bkash</option>
                     </select><br />
-                    <Button style={{ backgroundColor: '#d70f64' }} className="me-auto" onClick={this.submit}>Place Order</Button>
+                    <Button style={{ backgroundColor: '#d70f64' }} className="me-auto" onClick={this.submit} disabled={!this.props.purchasable}>Place Order</Button>
                     <Button color="secondary" className="ms-1" onClick={this.goBack}>Cancel</Button>
                 </form>
+            </div>
+        )
+        return (
+            <div>
+                {this.state.isLoading ? <Spinner /> : form}
             </div>
         )
     }
