@@ -3,6 +3,15 @@ import { Component } from "react";
 import { Button } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
+import axios from "axios";
+
+const mapStateToProps = state => {
+    return {
+        ingredients: state.ingredients,
+        totalPrice: state.totalPrice,
+        purchasable: state.purchasable,
+    }
+}
 
 class Checkout extends Component {
     state = {
@@ -27,21 +36,35 @@ class Checkout extends Component {
     }
 
     submit = () => {
-        console.log(this.state.values)
+        const order = {
+            ingredients: this.props.ingredients,
+            customer: this.state.values,
+            price: this.props.totalPrice,
+            orderTime: new Date(),
+        }
+        axios.post('https://burger-builder-480c2-default-rtdb.firebaseio.com/orders.json', order)
+        .then(response => console.log(response))
+        .catch(err => console.log(err))
     }
 
     render() {
         return (
             <div>
+                <h4 style={{
+                    border: '1px solid grey',
+                    boxShadow: '1px 1px #888888',
+                    borderRadius: '5px',
+                    padding: '20px'
+                }}>Payment: BDT {this.props.totalPrice}</h4>
                 <form style={{
                     border: '1px solid grey',
                     boxShadow: '1px 1px #888888',
                     borderRadius: '5px',
                     padding: '20px'
                 }}>
-                    <textarea name="deliveryAddress" value={this.state.values.deliveryAddress} className="form-control" placeholder="Your Address" onChange={(e)=> this.inputChange(e)} /><br />
-                    <input name="phone" className="form-control" value={this.state.values.phone} placeholder="Your Phone Number" onChange={(e)=> this.inputChange(e)}/><br />
-                    <select name='paymentType' className="form-control" value={this.state.paymentType} onChange={(e)=> this.inputChange(e)}>
+                    <textarea name="deliveryAddress" value={this.state.values.deliveryAddress} className="form-control" placeholder="Your Address" onChange={(e) => this.inputChange(e)} /><br />
+                    <input name="phone" className="form-control" value={this.state.values.phone} placeholder="Your Phone Number" onChange={(e) => this.inputChange(e)} /><br />
+                    <select name='paymentType' className="form-control" value={this.state.paymentType} onChange={(e) => this.inputChange(e)}>
                         <option value='Cash On Delivery'>Cash On Delivery</option>
                         <option value='Bkash'>Bkash</option>
                     </select><br />
@@ -55,7 +78,7 @@ class Checkout extends Component {
 
 function WithNavigate(props) {
     let navigate = useNavigate();
-    return <Checkout {...props} navigate = { navigate } />
+    return <Checkout {...props} navigate={navigate} />
 }
 
-export default WithNavigate;
+export default connect(mapStateToProps)(WithNavigate);
