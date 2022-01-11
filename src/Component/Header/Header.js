@@ -10,18 +10,23 @@ const Header = () => {
             <Navbar style={{
                 backgroundColor: '#d70f64', height: '70px'
             }}>
-                <NavbarBrand href='/' className= 'me-auto ms-md-5 Brand'>
+                <NavbarBrand href='/' className='me-auto ms-md-5 Brand'>
                     <img src={Logo} alt='Logo' width='80px' />
                 </NavbarBrand>
                 <Nav className='me-md-5'>
                     <NavItem>
-                         <NavLink to ='/' className='NavLink'>
+                        <NavLink to='/' className='NavLink'>
                             Burger Builder
                         </NavLink>
                     </NavItem>
                     <NavItem>
-                         <NavLink to ='/orders' className='NavLink'>
+                        <NavLink to='/orders' className='NavLink'>
                             Orders
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink to='/login' className='NavLink'>
+                            Login
                         </NavLink>
                     </NavItem>
                 </Nav>
