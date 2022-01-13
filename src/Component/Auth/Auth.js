@@ -15,12 +15,38 @@ class Auth extends Component {
                     }
                     onSubmit={
                         (values) => {
-                            console.log(values);
+                            console.log('Values:', values);
+                        }
+                    }
+                    validate={
+                        (values) => {
+                            const errors = {};
+                            if (!values.email) {
+                                errors.email = 'Required';
+                            } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+                                errors.email = 'Invalid Email Address';
+                            }
+                            if (!values.password) {
+                                errors.password = 'Required';
+                            } else if (values.password.length < 4) {
+                                errors.password = 'Must be atleast 4 characters!';
+                            }
+                            if (!values.passwordConfirm) {
+                                errors.passwordConfirm = 'Required';
+                            } else if (values.password !== values.passwordConfirm) {
+                                errors.passwordConfirm = 'Password does not match!';
+                            }
+                            console.log('Errors: ', errors);
+                            return errors;
                         }
                     }
                 >
-                    {({ values, handleChange, handleSubmit }) => (
-                        <div>
+                    {({ values, handleChange, handleSubmit, errors }) => (
+                        <div style={{
+                            border: '1px grey solid',
+                            padding: '15px',
+                            borderRadius: '7px',
+                        }}>
                             <form onSubmit={handleSubmit}>
                                 <input
                                     name="email"
@@ -29,6 +55,9 @@ class Auth extends Component {
                                     value={values.email}
                                     onChange={handleChange}
                                 />
+                                <span className="error">
+                                    {errors.email}
+                                </span>
                                 <br />
                                 <input
                                     name="password"
@@ -37,6 +66,9 @@ class Auth extends Component {
                                     value={values.password}
                                     onChange={handleChange}
                                 />
+                                <span className="error">
+                                    {errors.password}
+                                </span>
                                 <br />
                                 <input
                                     name="passwordConfirm"
@@ -45,6 +77,9 @@ class Auth extends Component {
                                     value={values.passwordConfirm}
                                     onChange={handleChange}
                                 />
+                                <span className="error">
+                                    {errors.passwordConfirm}
+                                </span>
                                 <br />
                                 <button type="submit" className="btn btn-success">
                                     Sign Up

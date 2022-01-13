@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import axios from "axios";
 import Spinner from "../../Spinner/Spinner";
 import { resetIngredients } from "../../../redux/actionCreator";
+import { Formik } from "formik";
 
 const mapStateToProps = state => {
     return {
@@ -23,11 +24,6 @@ const mapDispachToProps = dispatch => {
 
 class Checkout extends Component {
     state = {
-        values: {
-            deliveryAddress: '',
-            phone: '',
-            paymentType: 'Cash On Delivery',
-        },
         isLoading: false,
         isModalOpen: false,
         modalMSG: '',
@@ -37,20 +33,11 @@ class Checkout extends Component {
         this.props.navigate('/');
     }
 
-    inputChange = e => {
-        this.setState({
-            values: {
-                ...this.state.values,
-                [e.target.name]: e.target.value,
-            }
-        })
-    }
-
-    submit = () => {
+    submit = (values) => {
         this.setState({ isLoading: true });
         const order = {
             ingredients: this.props.ingredients,
-            customer: this.state.values,
+            customer: values,
             price: this.props.totalPrice,
             orderTime: new Date(),
         }
@@ -88,23 +75,105 @@ class Checkout extends Component {
                     boxShadow: '1px 1px #888888',
                     borderRadius: '5px',
                     padding: '20px'
-                }}>Payment: BDT {this.props.totalPrice}</h4>
-                <form style={{
-                    border: '1px solid grey',
-                    boxShadow: '1px 1px #888888',
-                    borderRadius: '5px',
-                    padding: '20px'
-                }}>
-                    <textarea name="deliveryAddress" value={this.state.values.deliveryAddress} className="form-control" placeholder="Your Address" onChange={(e) => this.inputChange(e)} /><br />
-                    <input name="phone" className="form-control" value={this.state.values.phone} placeholder="Your Phone Number" onChange={(e) => this.inputChange(e)} /><br />
-                    <select name='paymentType' className="form-control" value={this.state.paymentType} onChange={(e) => this.inputChange(e)}>
-                        <option value='Cash On Delivery'>Cash On Delivery</option>
-                        <option value='Bkash'>Bkash</option>
-                    </select><br />
-                    <Button style={{ backgroundColor: '#d70f64' }} className="me-auto" onClick={this.submit} disabled={!this.props.purchasable}>Place Order</Button>
-                    <Button color="secondary" className="ms-1" onClick={this.goBack}>Cancel</Button>
-                </form>
-            </div>
+                }}>Payment: BDT {this.props.totalPrice}
+                </h4>
+                <Formik
+                    initialValues={
+                        {
+                            deliveryAddress: '',
+                            phone: '',
+                            paymentType: '',
+                        }
+                    }
+                    onSubmit={
+                        (values) => {
+                            console.log('Values:', values)
+                            this.submit(values);
+                        }
+                    }
+                    validate={
+                        values => {
+                            const errors = {};
+                            if (!values.deliveryAddress) {
+                                errors.deliveryAddress = 'Required';
+                            }
+                            if (!values.phone) {
+                                errors.phone = 'Required';
+                            } else if (!/^(\+)?(88)?01[3-9]([0-9]){8}/.test(values.phone)) {
+                                errors.phone = 'Invalid Mobile';
+                            }
+                            if (!values.paymentType) {
+                                errors.paymentType = 'Required';
+                            } else if (values.paymentType === 'Select Payment Gateway') {
+                                errors.paymentType = 'Required';
+                            }
+                            console.log('Errors:', errors);
+                            return errors;
+                        }
+                    }
+                >
+                    {({ values, handleChange, handleSubmit, handleBlur, errors, touched }) => (
+                        <form style={{
+                            border: '1px solid grey',
+                            boxShadow: '1px 1px #888888',
+                            borderRadius: '5px',
+                            padding: '20px'
+                        }}
+                            onSubmit={handleSubmit}
+                        >
+                            <textarea
+                                name="deliveryAddress"
+                                id="deliveryAddress"
+                                value={values.deliveryAddress}
+                                className="form-control"
+                                placeholder="Your Address"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                            />
+                            <span className="error">
+                                {errors.deliveryAddress && touched.deliveryAddress && errors.deliveryAddress}
+                            </span>
+                            <br />
+                            <input
+                                name="phone"
+                                id="phone"
+                                className="form-control"
+                                value={values.phone}
+                                placeholder="Your Mobile Number"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                            />
+                            <span className="error">
+                                {errors.phone}
+                            </span>
+                            <br />
+                            <select
+                                name='paymentType'
+                                id="paymentType"
+                                className="form-control"
+                                value={values.paymentType}
+                                onBlur={handleBlur}
+                                onChange={handleChange}>
+                                <option>Select Payment Gateway</option>
+                                <option value='Cash On Delivery'>Cash On Delivery</option>
+                                <option value='Rocket'>Rocket</option>
+                                <option value='Bkash'>Bkash</option>
+                                <option value='Nagad'>Nagad</option>
+                                <option value='Nexus'>Nexus</option>
+                                <option value='Master'>Master</option>
+                                <option value='VISA'>VISA</option>
+
+                            </select>
+                            <span className="error">
+                                {errors.paymentType}
+                            </span>
+                            <br />
+                            <Button type="submit" style={{ backgroundColor: '#d70f64' }} className="me-auto" disabled={!this.props.purchasable}>Place Order</Button>
+                            <Button color="secondary" className="ms-1" onClick={this.goBack}>Cancel</Button>
+                        </form>
+                    )}
+                </Formik>
+            </div >
         )
         return (
             <div>

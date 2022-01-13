@@ -19,12 +19,15 @@ const Order = props => {
             padding: '20px',
             marginBottom: '10px',
         }}>
-            <p>Order Number: {props.order.id}</p>
-            <p>Delivery Address: {props.order.customer.deliveryAddress}</p>
+            <p><span className="order">Order Number: </span>{props.order.id}</p>
+            <p><span className="order">Order Time: </span>{props.order.orderTime}</p>
+            <p><span className="order">Mobile Number: </span>{props.order.customer.phone}</p>
+            <p><span className="order">Payment Type: </span>{props.order.customer.paymentType}</p>
+            <p><span className="order">Delivery Address: </span>{props.order.customer.deliveryAddress}</p>
             <hr />
             {ingredientSummary}
             <hr />
-            <p>Total: BDT {props.order.price}</p>
+            <p><span className="order">Total: </span>BDT {props.order.price}</p>
         </div>
     )
 }
