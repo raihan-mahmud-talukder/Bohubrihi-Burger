@@ -2,6 +2,14 @@ import React, { Component } from "react";
 import { Formik } from 'formik';
 
 class Auth extends Component {
+    state = {
+        mode: 'Sign Up'
+    }
+
+    switchModeHandler = () => {
+        this.setState({ mode: this.state.mode === 'Sign Up' ? 'Login' : 'Sign Up' })
+    }
+
     render() {
         return (
             <div>
@@ -28,13 +36,19 @@ class Auth extends Component {
                             }
                             if (!values.password) {
                                 errors.password = 'Required';
-                            } else if (values.password.length < 4) {
+                            }
+                            else if (isNaN(values.password)) {
+                                errors.password = 'Must be number';
+                            }
+                            else if (values.password.length < 4) {
                                 errors.password = 'Must be atleast 4 characters!';
                             }
-                            if (!values.passwordConfirm) {
-                                errors.passwordConfirm = 'Required';
-                            } else if (values.password !== values.passwordConfirm) {
-                                errors.passwordConfirm = 'Password does not match!';
+                            if (this.state.mode === 'Sign Up') {
+                                if (!values.passwordConfirm) {
+                                    errors.passwordConfirm = 'Required';
+                                } else if (values.password !== values.passwordConfirm) {
+                                    errors.passwordConfirm = 'Password does not match!';
+                                }
                             }
                             console.log('Errors: ', errors);
                             return errors;
@@ -47,6 +61,17 @@ class Auth extends Component {
                             padding: '15px',
                             borderRadius: '7px',
                         }}>
+                            <button style={{
+                                width: '100%',
+                                backgroundColor: '#d70f64',
+                                color: 'white',
+                            }}
+                                className="btn btn-lg"
+                                onClick={this.switchModeHandler}
+                            >
+                                Switch To {this.state.mode === 'Sign Up' ? 'Login' : 'Sign Up'}
+                            </button>
+                            <br /><br />
                             <form onSubmit={handleSubmit}>
                                 <input
                                     name="email"
@@ -60,6 +85,7 @@ class Auth extends Component {
                                 </span>
                                 <br />
                                 <input
+                                    type='password'
                                     name="password"
                                     placeholder="password"
                                     className="form-control"
@@ -70,19 +96,25 @@ class Auth extends Component {
                                     {errors.password}
                                 </span>
                                 <br />
-                                <input
-                                    name="passwordConfirm"
-                                    placeholder="Confirm Password"
-                                    className="form-control"
-                                    value={values.passwordConfirm}
-                                    onChange={handleChange}
-                                />
-                                <span className="error">
-                                    {errors.passwordConfirm}
-                                </span>
-                                <br />
+                                {
+                                    this.state.mode === 'Sign Up' ?
+                                        <div>
+                                            <input
+                                                type='password'
+                                                name="passwordConfirm"
+                                                placeholder="Confirm Password"
+                                                className="form-control"
+                                                value={values.passwordConfirm}
+                                                onChange={handleChange}
+                                            />
+                                            <span className="error">
+                                                {errors.passwordConfirm}
+                                            </span>
+                                            <br />
+                                        </div> : null
+                                }
                                 <button type="submit" className="btn btn-success">
-                                    Sign Up
+                                    {this.state.mode === 'Sign Up' ? 'Sign Up' : 'Login'}
                                 </button>
                             </form>
                         </div>
