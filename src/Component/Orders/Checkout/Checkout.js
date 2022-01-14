@@ -99,7 +99,7 @@ class Checkout extends Component {
                             }
                             if (!values.phone) {
                                 errors.phone = 'Required';
-                            } else if (!/^(\+)?(88)?01[3-9]([0-9]){8}/.test(values.phone)) {
+                            } else if (!/^(\+88)?(88)?01[3-9]([0-9]){8}$/.test(values.phone)) {
                                 errors.phone = 'Invalid Mobile';
                             }
                             if (!values.paymentType) {
