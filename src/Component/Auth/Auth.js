@@ -1,5 +1,13 @@
 import React, { Component } from "react";
 import { Formik } from 'formik';
+import { auth } from '../../redux/authAction'
+import { connect } from "react-redux";
+
+const mapDispatchToProps = dispatch => {
+    return {
+        auth: (email, password, mode) => dispatch(auth(email, password, mode))
+    }
+}
 
 class Auth extends Component {
     state = {
@@ -23,7 +31,7 @@ class Auth extends Component {
                     }
                     onSubmit={
                         (values) => {
-                            console.log('Values:', values);
+                            this.props.auth(values.email, values.password, this.state.mode);
                         }
                     }
                     validate={
@@ -37,9 +45,9 @@ class Auth extends Component {
                             if (!values.password) {
                                 errors.password = 'Required';
                             }
-                            else if (isNaN(values.password)) {
-                                errors.password = 'Must be number';
-                            }
+                            // else if (isNaN(values.password)) {
+                            //     errors.password = 'Must be number';
+                            // }
                             else if (values.password.length < 4) {
                                 errors.password = 'Must be atleast 4 characters!';
                             }
@@ -125,4 +133,4 @@ class Auth extends Component {
     }
 }
 
-export default Auth;
+export default connect(null, mapDispatchToProps)(Auth);
