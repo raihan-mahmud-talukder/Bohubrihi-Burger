@@ -35,6 +35,9 @@ const Header = props => {
                     <NavLink to='/orders' className='NavLink'>
                         Orders
                     </NavLink>
+                    <NavLink to='/logout' className='NavLink'>
+                        Logout
+                    </NavLink>
                 </NavItem>
             </Nav>
         )
