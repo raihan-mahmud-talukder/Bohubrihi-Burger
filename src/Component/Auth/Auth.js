@@ -3,6 +3,7 @@ import { Formik } from 'formik';
 import { auth } from '../../redux/authAction'
 import { connect } from "react-redux";
 import Spinner from "../Spinner/Spinner";
+import { Alert } from "reactstrap";
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -27,6 +28,10 @@ class Auth extends Component {
     }
 
     render() {
+        let err = null;
+        if (this.props.authFailedMsg !== null) {
+            err = <Alert color="danger">{this.props.authFailedMsg}</Alert>
+        }
         let form = null;
         if (this.props.authLoading) {
             form = <Spinner />
@@ -59,8 +64,8 @@ class Auth extends Component {
                             // else if (isNaN(values.password)) {
                             //     errors.password = 'Must be number';
                             // }
-                            else if (values.password.length < 4) {
-                                errors.password = 'Must be atleast 4 characters!';
+                            else if (values.password.length < 6) {
+                                errors.password = 'Must be atleast 6 characters!';
                             }
                             if (this.state.mode === 'Sign Up') {
                                 if (!values.passwordConfirm) {
@@ -143,6 +148,7 @@ class Auth extends Component {
         }
         return (
             <div>
+                { err }
                 { form} 
             </div>
         )
