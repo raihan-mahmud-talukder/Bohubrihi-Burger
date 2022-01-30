@@ -15,7 +15,7 @@ class Logout extends Component {
     }
     render() {
         return (
-            <Navigate to='/' />
+            <Navigate replace to='/' />
         )
     }
 }

@@ -50,7 +50,7 @@ const Header = props => {
                 <NavbarBrand href='/' className='me-auto ms-md-5 Brand'>
                     <img src={Logo} alt='Logo' width='80px' />
                 </NavbarBrand>
-                { links }
+                {links}
             </Navbar>
         </div>
     )
